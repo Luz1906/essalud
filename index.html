@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema de Citas Médicas - EsSalud Huaraz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            background: #f5f8fa;
+            color: #333;
+        }
+
+        header {
+            background: #007bff;
+            color: white;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-fixed {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .nav-logo img {
+            height: 40px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .banner {
+            background: url('logo2.jpg') center/cover no-repeat;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            text-align: center;
+            color: white;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 50, 0.6);
+        }
+
+        .banner-content {
+            position: relative;
+            z-index: 2;
+            animation: fadeInDown 1.5s;
+        }
+
+        .banner-content img {
+            width: 100px;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 6px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .card {
+            background: white;
+            max-width: 750px;
+            margin: 100px auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 1s;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        input,
+        select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #007bff;
+            color: white;
+        }
+
+        /* Loader */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .spinner {
+            border: 6px solid #ddd;
+            border-top: 6px solid #007bff;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Modal Sesión */
+        #panelSesion,
+        #modalCita,
+        #modalEmergencia {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            animation: zoomIn 0.6s;
+        }
+
+        .modal h2 {
+            margin-bottom: 10px;
+        }
+
+        .modal p {
+            margin: 8px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #007bff;
+            color: white;
+            margin-top: 50px;
+        }
+
+        .fila-cita:hover {
+            background: #e8f0ff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Loader -->
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Panel Sesión -->
+    <div id="panelSesion">
+        <div class="modal">
+            <h2>👩‍⚕️ Bienvenido a su Sesión</h2>
+            <p>Usted ha iniciado sesión correctamente en EsSalud Huaraz.</p>
+            <p>Puede registrar y consultar sus citas desde este sistema.</p>
+            <button class="btn" onclick="cerrarSesion()">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <!-- Modal Detalle de Cita -->
+    <div id="modalCita">
+        <div class="modal" id="contenidoCita">
+            <h2>📄 Detalle de la Cita</h2>
+            <p><strong>Nombre:</strong> <span id="detNombre"></span></p>
+            <p><strong>DNI:</strong> <span id="detDNI"></span></p>
+            <p><strong>Especialidad:</strong> <span id="detEsp"></span></p>
+            <p><strong>Doctor:</strong> <span id="detDoc"></span></p>
+            <p><strong>Fecha:</strong> <span id="detFecha"></span></p>
+            <p><strong>Hora:</strong> <span id="detHora"></span></p>
+            <button class="btn" onclick="cerrarDetalle()">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Modal Emergencia -->
+    <div id="modalEmergencia">
+        <div class="modal">
+            <h2>🚨 Emergencia</h2>
+            <p><strong>Especialidad:</strong> <span id="emergenciaEsp"></span></p>
+            <p><strong>Médico de Emergencia:</strong> <span id="emergenciaDoc"></span></p>
+            <p>Por favor, diríjase al área de emergencias.</p>
+            <button class="btn" onclick="cerrarEmergencia()">Cerrar</button>
+        </div>
+    </div>
+
+    <header>
+        <nav class="nav-fixed">
+            <div class="nav-logo">
+                <img src="logo1.jpg">
+                <span>EsSalud Huaraz</span>
+            </div>
+            <div class="nav-links">
+                <a href="#inicio">Inicio</a>
+                <a href="#login">Iniciar Sesión</a>
+                <a href="#cita">Agendar Cita</a>
+            </div>
+        </nav>
+    </header>
+
+    <section id="inicio" class="banner">
+        <div class="overlay"></div>
+        <div class="banner-content">
+            <img src="logo.jpeg">
+            <h1>Bienvenido al Sistema de Citas Médicas</h1>
+            <p>Atención eficiente y segura — EsSalud Huaraz</p>
+            <a href="#login" class="btn">Iniciar Sesión</a>
+            <a href="#cita" class="btn">Agendar Cita</a>
+        </div>
+    </section>
+
+    <!-- LOGIN -->
+    <section id="login" class="card">
+        <h2>Inicio de Sesión</h2>
+        <form id="formLogin" class="form-grid">
+            <input type="text" id="dniLogin" placeholder="Ingrese su DNI" maxlength="8" required pattern="\d{8}">
+            <input type="password" id="clave" placeholder="Contraseña" required>
+            <button type="submit" class="btn">Ingresar</button>
+        </form>
+    </section>
+
+    <!-- CITAS -->
+    <section id="cita" class="card">
+        <h2>Agendar Cita Médica</h2>
+        <form id="formCita" class="form-grid">
+            <input type="text" id="nombre" placeholder="Nombre completo" required>
+            <input type="text" id="dni2" placeholder="DNI" maxlength="8" pattern="\d{8}" required>
+
+            <select id="especialidad" required>
+                <option value="">-- Selecciona Especialidad --</option>
+                <option value="Medicina General">Medicina General</option>
+                <option value="Pediatría">Pediatría</option>
+                <option value="Cardiología">Cardiología</option>
+            </select>
+
+            <input type="text" id="doctorAsignado" placeholder="Doctor asignado" readonly>
+
+            <input type="date" id="fecha" required>
+            <input type="time" id="hora" required>
+
+            <button type="submit" class="btn">Registrar Cita</button>
+        </form>
+
+        <h3>🚑 Solicitar Emergencia</h3>
+        <button class="btn" onclick="solicitarEmergencia()">Solicitar Atención de Emergencia</button>
+
+        <h3>📋 Citas Registradas</h3>
+        <table id="tablaCitas">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>DNI</th>
+                    <th>Especialidad</th>
+                    <th>Doctor</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="6">Aún no hay citas registradas</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <footer>
+        &copy; 2025 EsSalud Huaraz — Sistema de Citas Médicas
+    </footer>
+
+    <script>
+        // Loader y panel de sesión
+        const loader = document.getElementById("loader");
+        const panelSesion = document.getElementById("panelSesion");
+
+        document.getElementById("formLogin").addEventListener("submit", (e) => {
+            e.preventDefault();
+            loader.style.display = "flex";
+            setTimeout(() => {
+                loader.style.display = "none";
+                panelSesion.style.display = "flex";
+            }, 2000);
+        });
+
+        function cerrarSesion() {
+            panelSesion.style.display = "none";
+        }
+
+        // Asignación automática de doctor y emergencia
+        const especialidad = document.getElementById("especialidad");
+        const doctor = document.getElementById("doctorAsignado");
+        const medicos = {
+            "Medicina General": {
+                "nombre": "Dr. José Alvarado",
+                "horario": ["08:00", "09:00", "10:00"]
+            },
+            "Pediatría": {
+                "nombre": "Dra. María Huamán",
+                "horario": ["11:00", "12:00", "13:00"]
+            },
+            "Cardiología": {
+                "nombre": "Dr. Carlos Quispe",
+                "horario": ["14:00", "15:00", "16:00"]
+            }
+        };
+
+        especialidad.addEventListener("change", () => {
+            const especialidadSeleccionada = especialidad.value;
+            if (medicos[especialidadSeleccionada]) {
+                doctor.value = medicos[especialidadSeleccionada].nombre;
+            } else {
+                doctor.value = "";
+            }
+        });
+
+        // Función para solicitar emergencia
+        function solicitarEmergencia() {
+            const especialidadSeleccionada = especialidad.value;
+            const horaSeleccionada = document.getElementById("hora").value;
+            const modalEmergencia = document.getElementById("modalEmergencia");
+            const emergenciaEsp = document.getElementById("emergenciaEsp");
+            const emergenciaDoc = document.getElementById("emergenciaDoc");
+
+            if (medicos[especialidadSeleccionada]) {
+                emergenciaEsp.textContent = especialidadSeleccionada;
+                emergenciaDoc.textContent = "Dr. Emergencia " + especialidadSeleccionada; // Simulación de médico de emergencia
+                modalEmergencia.style.display = "flex";
+            } else {
+                alert("Seleccione una especialidad para solicitar emergencia.");
+            }
+        }
+
+        function cerrarEmergencia() {
+            const modalEmergencia = document.getElementById("modalEmergencia");
+            modalEmergencia.style.display = "none";
+        }
+
+        // Registro de citas
+        const formCita = document.getElementById("formCita");
+        const tablaCitas = document.getElementById("tablaCitas").querySelector("tbody");
+
+        formCita.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById("nombre").value;
+            const dni = document.getElementById("dni2").value;
+            const esp = especialidad.value;
+            const doc = doctor.value;
+            const fecha = document.getElementById("fecha").value;
+            const hora = document.getElementById("hora").value;
+
+            const fila = document.createElement("tr");
+            fila.classList.add("fila-cita");
+            fila.innerHTML = `
+                <td>${nombre}</td>
+                <td>${dni}</td>
+                <td>${esp}</td>
+                <td>${doc}</td>
+                <td>${fecha}</td>
+                <td>${hora}</td>
+            `;
+            fila.addEventListener("click", () => mostrarDetalle(nombre, dni, esp, doc, fecha, hora));
+
+            if (tablaCitas.innerHTML.includes("Aún no hay citas")) tablaCitas.innerHTML = "";
+            tablaCitas.appendChild(fila);
+
+            formCita.reset();
+            doctor.value = "";
+        });
+
+        // Modal de detalle de cita
+        const modalCita = document.getElementById("modalCita");
+
+        function mostrarDetalle(nombre, dni, esp, doc, fecha, hora) {
+            document.getElementById("detNombre").textContent = nombre;
+            document.getElementById("detDNI").textContent = dni;
+            document.getElementById("detEsp").textContent = esp;
+            document.getElementById("detDoc").textContent = doc;
+            document.getElementById("detFecha").textContent = fecha;
+            document.getElementById("detHora").textContent = hora;
+            modalCita.style.display = "flex";
+        }
+
+        function cerrarDetalle() {
+            modalCita.style.display = "none";
+        }
+    </script>
+</body>
+
+</html>
