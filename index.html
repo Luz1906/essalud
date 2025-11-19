@@ -1,471 +1,815 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sistema de Citas Médicas - EsSalud Huaraz</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: "Poppins", sans-serif;
-        }
-
-        body {
-            background: #f5f8fa;
-            color: #333;
-        }
-
-        header {
-            background: #007bff;
-            color: white;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            left: 0;
-            z-index: 10;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        .nav-fixed {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-        }
-
-        .nav-logo img {
-            height: 40px;
-            margin-right: 8px;
-            vertical-align: middle;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            margin: 0 10px;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .nav-links a:hover {
-            text-decoration: underline;
-        }
-
-        .banner {
-            background: url('logo2.jpg') center/cover no-repeat;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            text-align: center;
-            color: white;
-        }
-
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 50, 0.6);
-        }
-
-        .banner-content {
-            position: relative;
-            z-index: 2;
-            animation: fadeInDown 1.5s;
-        }
-
-        .banner-content img {
-            width: 100px;
-            margin-bottom: 15px;
-        }
-
-        .btn {
-            background: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            display: inline-block;
-            margin: 6px;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .btn:hover {
-            background: #0056b3;
-        }
-
-        .card {
-            background: white;
-            max-width: 750px;
-            margin: 100px auto;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            animation: fadeInUp 1s;
-        }
-
-        .form-grid {
-            display: grid;
-            gap: 15px;
-        }
-
-        input,
-        select {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            width: 100%;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-
-        th {
-            background: #007bff;
-            color: white;
-        }
-
-        /* Loader */
-        #loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-        }
-
-        .spinner {
-            border: 6px solid #ddd;
-            border-top: 6px solid #007bff;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Modal Sesión */
-        #panelSesion,
-        #modalCita,
-        #modalEmergencia {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 600px;
-            width: 90%;
-            text-align: center;
-            animation: zoomIn 0.6s;
-        }
-
-        .modal h2 {
-            margin-bottom: 10px;
-        }
-
-        .modal p {
-            margin: 8px 0;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            background: #007bff;
-            color: white;
-            margin-top: 50px;
-        }
-
-        .fila-cita:hover {
-            background: #e8f0ff;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sistema Profesional - Citas Médicas | EsSalud Huaraz</title>
+  <link href="logo1.jpg" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <style>
+    :root{
+      --bg:#f4f7fb; --card:#fff; --primary:#0b72d6; --accent:#00a99d; --muted:#6b7280; --danger:#dc3545;
+      --radius:12px; --shadow: 0 8px 24px rgba(8,22,48,0.08);
+      --text:#071127;
+      --glass: rgba(255,255,255,.6);
+    }
+    [data-theme='dark']{
+      --bg:#071127; --card:#0b1220; --primary:#2f9bf0; --accent:#17c3b2; --muted:#9aa6b2; --text:#e6eef6;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,var(--bg),#eaf4ff);color:var(--text);-webkit-font-smoothing:antialiased}
+    header{position:fixed;left:0;right:0;top:0;height:72px;background:linear-gradient(90deg,var(--primary),#075bb5);display:flex;align-items:center;justify-content:space-between;padding:0 20px;color:white;z-index:100}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:700}
+    .brand img{height:40px;border-radius:8px}
+    .nav-actions{display:flex;gap:10px;align-items:center}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.14);color:white;padding:8px 12px;border-radius:10px;cursor:pointer}
+    main{padding-top:92px;max-width:1200px;margin:0 auto;padding-left:18px;padding-right:18px}
+    .hero{min-height:60vh;border-radius:14px;display:flex;align-items:center;justify-content:space-between;padding:36px;margin:20px 0;background:linear-gradient(135deg, rgba(11,114,214,0.12), rgba(0,169,157,0.06));box-shadow:var(--shadow)}
+    .hero-left{max-width:640px}
+    h1{margin:0;font-size:1.9rem}
+    p.muted{color:var(--muted);margin:6px 0}
+    .btn-primary{background:var(--primary);color:white;padding:12px 18px;border-radius:10px;border:none;font-weight:600;cursor:pointer}
+    .btn-secondary{background:transparent;color:var(--primary);border:1px solid rgba(11,114,214,0.12);padding:10px 14px;border-radius:10px;cursor:pointer}
+    .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+    .grid-2{display:grid;grid-template-columns:1fr 360px;gap:18px;margin-bottom:20px}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #e6eef8;background:linear-gradient(180deg,#fff,#fbfdff)}
+    input:focus,select:focus{outline:none;box-shadow:0 6px 18px rgba(11,114,214,0.08)}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:10px;border-bottom:1px solid rgba(8,22,48,0.04);text-align:left}
+    th{background:rgba(11,114,214,0.04)}
+    .modal-root{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(6,18,33,0.45);z-index:200;visibility:hidden;opacity:0;transition:opacity .18s,visibility .18s}
+    .modal-root.show{visibility:visible;opacity:1}
+    .modal-box{background:var(--card);padding:18px;border-radius:12px;min-width:300px;max-width:620px;box-shadow:0 12px 40px rgba(6,18,33,0.12)}
+    .spinner{border:8px solid #eee;border-top:8px solid var(--primary);border-radius:50%;width:64px;height:64px;animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .row{display:flex;align-items:center;gap:10px}
+    .muted{color:var(--muted);font-size:13px}
+    .small{font-size:13px;color:var(--muted)}
+    .float-right{text-align:right}
+    .tag{padding:6px 10px;border-radius:999px;background:#f3f7ff;color:var(--primary);font-weight:600}
+    .actions button{margin-left:6px}
+    .dark-toggle{display:flex;align-items:center;gap:8px;color:white}
+    /* Actions table styles (improved + searchable) */
+    .actions-table-container {
+      margin-top: 12px;
+      background: transparent;
+      padding: 0;
+      border-radius: 12px;
+    }
+    .search-bar {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #e3e7ee;
+      margin-bottom: 12px;
+      font-size: 14px;
+      outline: none;
+    }
+    .actions-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .actions-table thead {
+      background: linear-gradient(90deg,var(--primary),#075bb5);
+      color: white;
+    }
+    .actions-table th, .actions-table td { padding: 10px 12px; }
+    .actions-table tbody tr { border-bottom: 1px solid #eef3fb; transition: background 0.2s; }
+    .actions-table tbody tr:hover { background: rgba(11,114,214,0.04); }
+    .mini-btn { padding: 6px 10px; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; }
+    .mini-btn.primary { background: #0b72d6; color: white; }
+    .mini-btn.sec { background: #e7f1fb; color: #0b72d6; border: none; }
+    .mini-btn:active { transform: translateY(1px); }
+    .action-icon { width: 18px; vertical-align: middle; margin-right: 8px; opacity: 0.95; }
+    @media(max-width:980px){.grid-2{grid-template-columns:1fr}.hero{flex-direction:column;gap:18px}.brand img{display:none}.actions-table thead{display:none}.actions-table tbody td{display:block;width:100%}.actions-table tbody tr{margin-bottom:10px;border-bottom:1px solid #f3f5f9}}
+  </style>
 </head>
+<body data-theme="light">
 
-<body>
-
-    <!-- Loader -->
-    <div id="loader">
-        <div class="spinner"></div>
+  <header>
+    <div class="brand">
+      <img src="logo1.jpg" alt="logo">
+      EsSalud Huaraz
     </div>
+    <div class="nav-actions">
+      <div class="dark-toggle">
+        <label style="font-size:13px;margin-right:8px">Modo:</label>
+        <button id="toggleTheme" class="btn-ghost">Oscuro</button>
+      </div>
+      <button class="btn-ghost" onclick="abrirLoginModal()">Iniciar sesión</button>
+      <button class="btn-ghost" onclick="abrirRegisterModal()">Registrar paciente</button>
+    </div>
+  </header>
 
-    <!-- Panel Sesión -->
-    <div id="panelSesion">
-        <div class="modal">
-            <h2>👩‍⚕️ Bienvenido a su Sesión</h2>
-            <p>Usted ha iniciado sesión correctamente en EsSalud Huaraz.</p>
-            <p>Puede registrar y consultar sus citas desde este sistema.</p>
-            <button class="btn" onclick="cerrarSesion()">Cerrar Sesión</button>
+  <main>
+    <section class="hero card">
+      <div class="hero-left">
+        <h1 class="animate__animated animate__fadeInDown">Atención ágil y segura — Sistema de Citas</h1>
+        <p class="muted">Gestiona tus citas en EsSalud Huaraz. Accede como asegurado o administrador.</p>
+        <div style="display:flex;gap:10px;margin-top:12px">
+          <button class="btn-primary" onclick="abrirLoginModal()">Iniciar sesión</button>
+          <button class="btn-secondary" onclick="document.getElementById('proCita').scrollIntoView({behavior:'smooth'})">Agendar cita</button>
+          <div class="tag">Local — Prueba</div>
         </div>
-    </div>
+      </div>
+      <div class="hero-illustration" style="width:320px;height:200px;border-radius:12px;background:linear-gradient(180deg,#fff,#f3f8ff);display:flex;align-items:center;justify-content:center">
+        <svg width="220" height="140" viewBox="0 0 220 140" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+          <rect width="220" height="140" rx="12" fill="#fff" opacity="0.9"/>
+          <g transform="translate(12,18)" fill="none" stroke="#0b72d6" stroke-width="2" stroke-linecap="round">
+            <path d="M10 40 q30 -30 60 0 q30 30 60 0" stroke-opacity=".9"/>
+            <circle cx="40" cy="20" r="6" fill="#0b72d6"/>
+            <circle cx="100" cy="20" r="6" fill="#00a99d"/>
+          </g>
+        </svg>
+      </div>
+    </section>
 
-    <!-- Modal Detalle de Cita -->
-    <div id="modalCita">
-        <div class="modal" id="contenidoCita">
-            <h2>📄 Detalle de la Cita</h2>
-            <p><strong>Nombre:</strong> <span id="detNombre"></span></p>
-            <p><strong>DNI:</strong> <span id="detDNI"></span></p>
-            <p><strong>Especialidad:</strong> <span id="detEsp"></span></p>
-            <p><strong>Doctor:</strong> <span id="detDoc"></span></p>
-            <p><strong>Fecha:</strong> <span id="detFecha"></span></p>
-            <p><strong>Hora:</strong> <span id="detHora"></span></p>
-            <button class="btn" onclick="cerrarDetalle()">Cerrar</button>
+    <section id="proCita" class="card grid-2">
+      <!-- LEFT: Form / Dashboard / Views -->
+      <div id="leftArea">
+
+        <!-- WELCOME CARD -->
+        <div id="welcomeCard" class="card" style="margin-bottom:12px">
+          <h3 style="margin:0">Bienvenido</h3>
+          <p class="muted">Inicia sesión para acceder a tu panel o regístrate si aún no estás asegurado.</p>
+          <div style="display:flex;gap:10px;margin-top:10px">
+            <button class="btn-primary" onclick="abrirLoginModal()">Iniciar sesión</button>
+            <button class="btn-secondary" onclick="abrirRegisterModal()">Registrar usuario</button>
+          </div>
         </div>
-    </div>
 
-    <!-- Modal Emergencia -->
-    <div id="modalEmergencia">
-        <div class="modal">
-            <h2>🚨 Emergencia</h2>
-            <p><strong>Especialidad:</strong> <span id="emergenciaEsp"></span></p>
-            <p><strong>Médico de Emergencia:</strong> <span id="emergenciaDoc"></span></p>
-            <p>Por favor, diríjase al área de emergencias.</p>
-            <button class="btn" onclick="cerrarEmergencia()">Cerrar</button>
-        </div>
-    </div>
-
-    <header>
-        <nav class="nav-fixed">
-            <div class="nav-logo">
-                <img src="logo1.jpg">
-                <span>EsSalud Huaraz</span>
+        <!-- USER DASHBOARD (after login as patient) -->
+        <div id="patientDashboard" class="card" style="display:none">
+          <h3>Panel del Paciente</h3>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div id="patientName" style="font-weight:700"></div>
+              <div class="muted" id="patientDni"></div>
             </div>
-            <div class="nav-links">
-                <a href="#inicio">Inicio</a>
-                <a href="#login">Iniciar Sesión</a>
-                <a href="#cita">Agendar Cita</a>
+            <div class="row">
+              <button class="btn-secondary" onclick="logoutUser()">Cerrar sesión</button>
             </div>
-        </nav>
-    </header>
-
-    <section id="inicio" class="banner">
-        <div class="overlay"></div>
-        <div class="banner-content">
-            <img src="logo.jpeg">
-            <h1>Bienvenido al Sistema de Citas Médicas</h1>
-            <p>Atención eficiente y segura — EsSalud Huaraz</p>
-            <a href="#login" class="btn">Iniciar Sesión</a>
-            <a href="#cita" class="btn">Agendar Cita</a>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:10px">
+            <button class="btn-primary" onclick="showCitaForm()">Agendar Cita</button>
+            <button class="btn-secondary" onclick="showMyAppointments()">Ver Mis Citas</button>
+          </div>
         </div>
+
+        <!-- ADMIN DASHBOARD -->
+        <div id="adminDashboard" class="card" style="display:none">
+          <h3>Panel Administrador</h3>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div id="adminName" style="font-weight:700">Administrador</div>
+              <div class="muted" id="adminInfo">Acceso total</div>
+            </div>
+            <div class="row">
+              <button class="btn-secondary" onclick="logoutAdmin()">Cerrar sesión</button>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="card">
+              <h4 style="margin:0">Estadísticas</h4>
+              <div class="muted" style="margin-top:8px">Totales y resumen</div>
+              <div style="margin-top:10px">
+                <div>Total usuarios: <strong id="statUsers">0</strong></div>
+                <div>Total doctores: <strong id="statDoctors">0</strong></div>
+                <div>Total citas: <strong id="statAppointments">0</strong></div>
+              </div>
+            </div>
+            <div class="card">
+              <h4 style="margin:0">Acciones</h4>
+              <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+                <button class="btn-primary" onclick="openDoctorEditor()">Agregar Doctor</button>
+                <button class="btn-secondary" onclick="renderDoctors()">Ver Doctores</button>
+                <button class="btn-secondary" onclick="renderAllAppointmentsTable()">Ver Citas</button>
+                <button class="btn-secondary" onclick="exportAllCSV()">Exportar CSV</button>
+              </div>
+
+              <!-- Tabla de Acciones mejorada con buscador -->
+              <div class="actions-table-container">
+                <input type="text" id="searchActions" class="search-bar" placeholder="🔍 Buscar acción...">
+
+                <table class="actions-table" id="actionsTable" aria-label="Tabla de acciones">
+                  <thead>
+                    <tr>
+                      <th>Acción</th>
+                      <th>Descripción</th>
+                      <th>Ejecutar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><svg class="action-icon" viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M0 0h24v24H0z" stroke="none"/></svg>Agregar doctor</td>
+                      <td>Registrar un nuevo doctor con nombres, especialidad y horarios.</td>
+                      <td><button class="mini-btn primary" onclick="openDoctorEditor()">Abrir</button></td>
+                    </tr>
+                    <tr>
+                      <td><svg class="action-icon" viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M0 0h24v24H0z" stroke="none"/></svg>Ver doctores</td>
+                      <td>Mostrar lista completa de doctores registrados.</td>
+                      <td><button class="mini-btn sec" onclick="renderDoctors()">Ver</button></td>
+                    </tr>
+                    <tr>
+                      <td><svg class="action-icon" viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M0 0h24v24H0z" stroke="none"/></svg>Ver citas</td>
+                      <td>Mostrar todas las citas registradas con doctor, fecha y hora.</td>
+                      <td><button class="mini-btn sec" onclick="renderAllAppointmentsTable()">Mostrar</button></td>
+                    </tr>
+                    <tr>
+                      <td><svg class="action-icon" viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M0 0h24v24H0z" stroke="none"/></svg>Exportar CSV</td>
+                      <td>Descargar un archivo CSV con todos los registros del sistema.</td>
+                      <td><button class="mini-btn sec" onclick="exportAllCSV()">Exportar</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /Tabla Acciones -->
+
+            </div>
+          </div>
+        </div>
+
+        <!-- CITA FORM (visible after login as patient) -->
+        <div id="citaFormCard" class="card" style="display:none;margin-top:12px">
+          <h4>Agendar Cita</h4>
+          <form id="proForm">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div>
+                <label>Nombre</label>
+                <input id="fieldName" type="text" required>
+              </div>
+              <div>
+                <label>DNI</label>
+                <input id="fieldDni" type="text" maxlength="8" required>
+              </div>
+              <div>
+                <label>Especialidad</label>
+                <select id="fieldEsp" required>
+                  <option value="">-- Seleccionar --</option>
+                  <option>Medicina General</option>
+                  <option>Pediatría</option>
+                  <option>Cardiología</option>
+                </select>
+              </div>
+              <div>
+                <label>Doctor</label>
+                <select id="fieldDoc" required>
+                  <option value="">-- Doctor --</option>
+                </select>
+              </div>
+              <div>
+                <label>Fecha</label>
+                <input id="fieldFecha" type="date" required>
+              </div>
+              <div>
+                <label>Hora</label>
+                <select id="fieldHora" required>
+                  <option value="">-- Hora --</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <button class="btn-primary" type="submit">Confirmar cita</button>
+              <button class="btn-secondary" type="button" onclick="requestEmergency()">Emergencia</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- MIS CITAS (patient) -->
+        <div id="myAppointmentsCard" class="card" style="display:none;margin-top:12px">
+          <h4>Mis Citas</h4>
+          <table id="tableMyAppts">
+            <thead><tr><th>Fecha</th><th>Hora</th><th>Especialidad</th><th>Doctor</th><th>Acciones</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <!-- ADMIN: All appointments table -->
+        <div id="adminAppointmentsCard" class="card" style="display:none;margin-top:12px">
+          <h4>Todas las Citas</h4>
+          <table id="tableAllAppts">
+            <thead><tr><th>Nombre</th><th>DNI</th><th>Especialidad</th><th>Doctor</th><th>Fecha</th><th>Hora</th><th>Emergencia</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Users list, doctors, admin lists -->
+      <aside>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <h4 style="margin:0">Pacientes</h4>
+              <div class="muted" style="font-size:13px">Búsqueda rápida</div>
+            </div>
+            <button class="btn-secondary" onclick="abrirRegisterModal()">+ Nuevo</button>
+          </div>
+          <div style="margin-top:10px">
+            <input id="searchInput" type="text" placeholder="Buscar por nombre o DNI" oninput="renderUsers()" style="padding:10px;border-radius:8px;border:1px solid #eaeff7;width:100%">
+          </div>
+          <div id="usersList" style="margin-top:10px;max-height:320px;overflow:auto"></div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h4 style="margin:0">Doctores</h4>
+          <div id="doctorsList" style="margin-top:10px;max-height:220px;overflow:auto"></div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h4 style="margin:0">Atajos</h4>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+            <button class="btn-primary" onclick="showCitaForm(true)">Agendar (prefill)</button>
+            <button class="btn-secondary" onclick="showMyAppointments()">Mis citas</button>
+            <button class="btn-secondary" onclick="toggleTheme()">Cambiar tema</button>
+          </div>
+        </div>
+      </aside>
+
     </section>
 
-    <!-- LOGIN -->
-    <section id="login" class="card">
-        <h2>Inicio de Sesión</h2>
-        <form id="formLogin" class="form-grid">
-            <input type="text" id="dniLogin" placeholder="Ingrese su DNI" maxlength="8" required pattern="\d{8}">
-            <input type="password" id="clave" placeholder="Contraseña" required>
-            <button type="submit" class="btn">Ingresar</button>
-        </form>
-    </section>
-
-    <!-- CITAS -->
-    <section id="cita" class="card">
-        <h2>Agendar Cita Médica</h2>
-        <form id="formCita" class="form-grid">
-            <input type="text" id="nombre" placeholder="Nombre completo" required>
-            <input type="text" id="dni2" placeholder="DNI" maxlength="8" pattern="\d{8}" required>
-
-            <select id="especialidad" required>
-                <option value="">-- Selecciona Especialidad --</option>
-                <option value="Medicina General">Medicina General</option>
-                <option value="Pediatría">Pediatría</option>
-                <option value="Cardiología">Cardiología</option>
-            </select>
-
-            <input type="text" id="doctorAsignado" placeholder="Doctor asignado" readonly>
-
-            <input type="date" id="fecha" required>
-            <input type="time" id="hora" required>
-
-            <button type="submit" class="btn">Registrar Cita</button>
-        </form>
-
-        <h3>🚑 Solicitar Emergencia</h3>
-        <button class="btn" onclick="solicitarEmergencia()">Solicitar Atención de Emergencia</button>
-
-        <h3>📋 Citas Registradas</h3>
-        <table id="tablaCitas">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>DNI</th>
-                    <th>Especialidad</th>
-                    <th>Doctor</th>
-                    <th>Fecha</th>
-                    <th>Hora</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="6">Aún no hay citas registradas</td>
-                </tr>
-            </tbody>
-        </table>
-    </section>
-
-    <footer>
-        &copy; 2025 EsSalud Huaraz — Sistema de Citas Médicas
+    <footer style="text-align:center;margin-top:20px;color:var(--muted)">
+      © 2025 EsSalud Huaraz
     </footer>
+  </main>
 
-    <script>
-        // Loader y panel de sesión
-        const loader = document.getElementById("loader");
-        const panelSesion = document.getElementById("panelSesion");
+  <!-- MODALES -->
+  <!-- LOGIN modal -->
+  <div id="modalLogin" class="modal-root" aria-hidden>
+    <div class="modal-box">
+      <h3 style="margin:0 0 8px">Iniciar sesión</h3>
+      <div class="muted">Seleccione tipo de acceso</div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <label><input type="radio" name="loginType" value="patient" checked> Asegurado</label>
+        <label><input type="radio" name="loginType" value="admin"> Administrador</label>
+      </div>
 
-        document.getElementById("formLogin").addEventListener("submit", (e) => {
-            e.preventDefault();
-            loader.style.display = "flex";
-            setTimeout(() => {
-                loader.style.display = "none";
-                panelSesion.style.display = "flex";
-            }, 2000);
-        });
+      <div id="loginPatient" style="margin-top:10px">
+        <label class="muted">DNI</label>
+        <input id="loginPatientDni" type="text" maxlength="8" placeholder="DNI (solo DNI puede ingresar)">
+        <div class="muted small" style="margin-top:6px">La contraseña es opcional para pacientes.</div>
+        <label class="muted" style="margin-top:6px">Contraseña</label>
+        <input id="loginPatientPass" type="password" placeholder="Contraseña (opcional)">
+      </div>
 
-        function cerrarSesion() {
-            panelSesion.style.display = "none";
+      <div id="loginAdmin" style="display:none;margin-top:10px">
+        <label class="muted">Usuario</label>
+        <input id="loginAdminUser" type="text" placeholder="Usuario (ej. admin)">
+        <label class="muted" style="margin-top:6px">Contraseña</label>
+        <input id="loginAdminPass" type="password" placeholder="Contraseña">
+        <div class="muted small" style="margin-top:6px">Admin por defecto: usuario <b>admin</b> / contraseña <b>123456</b>.</div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
+        <button class="btn-secondary" onclick="closeModal('modalLogin')">Cancelar</button>
+        <button class="btn-primary" onclick="submitLogin()">Ingresar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register modal -->
+  <div id="modalRegister" class="modal-root" aria-hidden>
+    <div class="modal-box">
+      <h3 style="margin:0 0 8px">Registrar paciente</h3>
+      <label class="muted">Nombre completo</label>
+      <input id="regName" type="text" placeholder="Nombre">
+      <label class="muted" style="margin-top:8px">DNI</label>
+      <input id="regDni" type="text" maxlength="8" placeholder="DNI">
+      <label class="muted" style="margin-top:8px">Contraseña (opcional)</label>
+      <input id="regPass" type="password" placeholder="Contraseña">
+      <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
+        <button class="btn-secondary" onclick="closeModal('modalRegister')">Cancelar</button>
+        <button class="btn-primary" onclick="submitRegister()">Registrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Doctor modal (admin editor) -->
+  <div id="modalDoctor" class="modal-root" aria-hidden>
+    <div class="modal-box">
+      <h3 id="doctorModalTitle">Agregar Doctor</h3>
+      <label class="muted">Nombre</label>
+      <input id="doctorName" placeholder="Ej. Dr. Juan Pérez">
+      <label class="muted" style="margin-top:8px">Especialidad</label>
+      <input id="doctorEsp" placeholder="Ej. Medicina General">
+      <label class="muted" style="margin-top:8px">Horarios (coma separada, ej. 08:00,09:00)</label>
+      <input id="doctorHours" placeholder="08:00,09:00,10:00">
+      <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
+        <button class="btn-secondary" onclick="closeModal('modalDoctor')">Cancelar</button>
+        <button class="btn-primary" onclick="saveDoctor()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm modal -->
+  <div id="modalConfirm" class="modal-root" aria-hidden>
+    <div class="modal-box">
+      <h3>✔ Confirmación</h3>
+      <div id="confirmBody" class="muted" style="margin-top:8px"></div>
+      <div style="text-align:right;margin-top:12px">
+        <button class="btn-primary" onclick="closeModal('modalConfirm')">Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ============================
+   Storage keys & initial data
+   ============================ */
+const LS_USERS = 'es_salud_users_v3';
+const LS_DOCTORS = 'es_salud_doctors_v3';
+const LS_APPTS = 'es_salud_appts_v3';
+
+let users = JSON.parse(localStorage.getItem(LS_USERS) || '[]');
+let doctors = JSON.parse(localStorage.getItem(LS_DOCTORS) || '[]');
+let appointments = JSON.parse(localStorage.getItem(LS_APPTS) || '[]');
+
+let currentPatient = null;
+let currentAdmin = null;
+let editingDoctorId = null;
+
+/* sensible defaults */
+if(!users.find(u=>u.role==='admin')){
+  users.push({ id:'admin-1', nombre:'Administrador', dni:'60028606', user:'admin', pass:'123456', role:'admin' });
+  localStorage.setItem(LS_USERS, JSON.stringify(users));
+}
+if(doctors.length===0){
+  doctors.push({ id: 'd1', name:'Dr. José Alvarado', esp:'Medicina General', hours:['08:00','09:00','10:00']});
+  doctors.push({ id: 'd2', name:'Dra. María Huamán', esp:'Pediatría', hours:['11:00','12:00']});
+  doctors.push({ id: 'd3', name:'Dr. Carlos Paredes', esp:'Cardiología', hours:['13:00','14:00']});
+  localStorage.setItem(LS_DOCTORS, JSON.stringify(doctors));
+}
+
+/* helpers */
+function saveUsers(){ localStorage.setItem(LS_USERS, JSON.stringify(users)); }
+function saveDoctors(){ localStorage.setItem(LS_DOCTORS, JSON.stringify(doctors)); }
+function saveAppointments(){ localStorage.setItem(LS_APPTS, JSON.stringify(appointments)); }
+
+/* modals */
+function showModal(id){ const el=document.getElementById(id); el.classList.add('show'); el.style.visibility='visible'; }
+function hideModal(id){ const el=document.getElementById(id); el.classList.remove('show'); el.style.visibility='hidden'; }
+function closeModal(id){ hideModal(id); }
+
+/* theme */
+function toggleTheme(){
+  const el = document.documentElement;
+  if(el.getAttribute('data-theme')==='dark'){ el.setAttribute('data-theme','light'); document.getElementById('toggleTheme').innerText='Oscuro'; }
+  else { el.setAttribute('data-theme','dark'); document.getElementById('toggleTheme').innerText='Claro'; }
+}
+document.getElementById('toggleTheme').addEventListener('click', toggleTheme);
+
+/* open/close modals + login type */
+function abrirLoginModal(){ showModal('modalLogin'); setupLoginType(); }
+function abrirRegisterModal(){ showModal('modalRegister'); }
+function openDoctorEditor(editId){ editingDoctorId = editId || null; if(editId){ const d = doctors.find(x=>x.id===editId); document.getElementById('doctorModalTitle').innerText='Editar Doctor'; document.getElementById('doctorName').value=d.name; document.getElementById('doctorEsp').value=d.esp; document.getElementById('doctorHours').value=d.hours.join(','); } else { document.getElementById('doctorModalTitle').innerText='Agregar Doctor'; document.getElementById('doctorName').value=''; document.getElementById('doctorEsp').value=''; document.getElementById('doctorHours').value=''; } showModal('modalDoctor'); }
+
+/* register patient */
+function submitRegister(){
+  const name = document.getElementById('regName').value.trim();
+  const dni = document.getElementById('regDni').value.trim();
+  const pass = document.getElementById('regPass').value.trim();
+  if(!name || !dni){ alert('Complete nombre y DNI'); return; }
+  if(users.find(u=>u.dni===dni && u.role==='paciente')){ alert('DNI ya registrado'); return; }
+  const id = 'u' + Date.now();
+  users.push({ id, nombre: name, dni, pass: pass || '', role:'paciente' });
+  saveUsers();
+  closeModal('modalRegister');
+  renderUsers();
+  alert('Paciente registrado correctamente');
+}
+
+/* login setup */
+function setupLoginType(){
+  const radios = Array.from(document.getElementsByName('loginType'));
+  radios.forEach(r=>r.addEventListener('change', e=>{
+    if(e.target.value==='patient'){ document.getElementById('loginPatient').style.display='block'; document.getElementById('loginAdmin').style.display='none'; }
+    else{ document.getElementById('loginPatient').style.display='none'; document.getElementById('loginAdmin').style.display='block'; }
+  }));
+  const val = document.querySelector('input[name="loginType"]:checked').value;
+  if(val==='patient'){ document.getElementById('loginPatient').style.display='block'; document.getElementById('loginAdmin').style.display='none'; } else { document.getElementById('loginPatient').style.display='none'; document.getElementById('loginAdmin').style.display='block'; }
+}
+
+/* submit login */
+function submitLogin(){
+  const type = document.querySelector('input[name="loginType"]:checked').value;
+  if(type==='patient'){
+    const dni = document.getElementById('loginPatientDni').value.trim();
+    const pass = document.getElementById('loginPatientPass').value;
+    if(!dni){ alert('Ingrese DNI'); return; }
+    const found = users.find(u => u.dni === dni && u.role === 'paciente');
+    // backdoor admin (only default admin)
+    if(dni === '60028606' && pass === '123456'){
+      const admin = users.find(u=>u.role==='admin'); if(admin){ afterAdminLogin(admin); closeModal('modalLogin'); return; }
+    }
+    if(!found){ alert('Paciente no registrado'); return; }
+    if(found.pass && found.pass!=='' && pass && found.pass!==pass){ alert('Contraseña incorrecta'); return; }
+    currentPatient = found; afterPatientLogin(); closeModal('modalLogin'); return;
+  } else {
+    const user = document.getElementById('loginAdminUser').value.trim();
+    const pass = document.getElementById('loginAdminPass').value;
+    if(!user || !pass){ alert('Ingrese usuario y contraseña'); return; }
+    const admin = users.find(u => (u.user && u.user === user && u.pass === pass && u.role==='admin') || (u.dni === '60028606' && user=== '60028606' && pass==='123456' ));
+    if(!admin){ alert('Credenciales de administrador inválidas'); return; }
+    afterAdminLogin(admin); closeModal('modalLogin'); return;
+  }
+}
+
+/* after logins */
+function afterPatientLogin(){
+  const loader = createLoader('Validando paciente...');
+  setTimeout(()=>{ document.body.removeChild(loader); showPatientDashboard(); }, 500);
+}
+function showPatientDashboard(){
+  document.getElementById('welcomeCard').style.display='none';
+  document.getElementById('patientDashboard').style.display='block';
+  document.getElementById('patientName').innerText = currentPatient.nombre;
+  document.getElementById('patientDni').innerText = 'DNI: ' + currentPatient.dni;
+  document.getElementById('citaFormCard').style.display='block';
+  document.getElementById('fieldName').value = currentPatient.nombre;
+  document.getElementById('fieldDni').value = currentPatient.dni;
+  renderDoctorsSelect();
+  renderMyAppointments();
+}
+
+function afterAdminLogin(adminUser){
+  currentAdmin = adminUser;
+  const loader = createLoader('Accediendo como administrador...');
+  setTimeout(()=>{ document.body.removeChild(loader); showAdminDashboard(); }, 500);
+}
+function showAdminDashboard(){
+  document.getElementById('welcomeCard').style.display='none';
+  document.getElementById('adminDashboard').style.display='block';
+  document.getElementById('adminAppointmentsCard').style.display='none';
+  renderUsers(); renderDoctors(); renderDoctorsSelect(); renderStats();
+}
+
+/* loader */
+function createLoader(text){
+  const wrapper = document.createElement('div'); wrapper.className = 'modal-root show'; wrapper.style.background='rgba(6,18,33,0.45)';
+  wrapper.innerHTML = `<div class="modal-box" style="text-align:center"><div class="spinner"></div><div style="margin-top:12px;color:var(--muted)">${text}</div></div>`;
+  document.body.appendChild(wrapper); return wrapper;
+}
+
+/* logout */
+function logoutUser(){ currentPatient = null; document.getElementById('patientDashboard').style.display='none'; document.getElementById('citaFormCard').style.display='none'; document.getElementById('welcomeCard').style.display='block'; alert('Sesión finalizada'); }
+function logoutAdmin(){ currentAdmin = null; document.getElementById('adminDashboard').style.display='none'; document.getElementById('welcomeCard').style.display='block'; document.getElementById('adminAppointmentsCard').style.display='none'; alert('Administrador desconectado'); }
+
+/* render users */
+function renderUsers(){
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const container = document.getElementById('usersList'); container.innerHTML='';
+  const list = users.filter(u => u.role==='paciente' && (!q || u.nombre.toLowerCase().includes(q) || u.dni.includes(q)));
+  if(list.length===0){ container.innerHTML = '<div class="muted">Sin pacientes</div>'; return; }
+  list.forEach(u=>{
+    const div = document.createElement('div'); div.style.padding='8px'; div.style.borderBottom='1px solid #f0f6ff';
+    div.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
+      <div><strong>${u.nombre}</strong><div class="muted" style="font-size:13px">${u.dni}</div></div>
+      <div style="display:flex;gap:6px">
+        <button class="btn-secondary" onclick='prefillPatient("${u.id}")'>Seleccionar</button>
+        <button class="btn-secondary" onclick='deleteUser("${u.id}")' style="background:transparent;border:1px solid #ffe6e9;color:var(--danger)">Eliminar</button>
+      </div>
+    </div>`;
+    container.appendChild(div);
+  });
+}
+
+/* prefill patient */
+function prefillPatient(userId){
+  const u = users.find(x=>x.id===userId);
+  if(!u) return;
+  document.getElementById('fieldName').value = u.nombre;
+  document.getElementById('fieldDni').value = u.dni;
+  document.getElementById('citaFormCard').style.display='block';
+  window.scrollTo({top: document.getElementById('citaFormCard').offsetTop - 80, behavior:'smooth'});
+}
+
+/* delete user */
+function deleteUser(userId){
+  if(!confirm('Eliminar paciente y sus citas?')) return;
+  const u = users.find(x=>x.id===userId);
+  users = users.filter(x=>x.id!==userId);
+  appointments = appointments.filter(a=>a.dni !== u.dni);
+  saveUsers(); saveAppointments();
+  renderUsers(); renderStats(); alert('Paciente eliminado');
+}
+
+/* Doctors CRUD & render */
+function renderDoctors(){
+  const container = document.getElementById('doctorsList'); container.innerHTML='';
+  if(doctors.length===0){ container.innerHTML='<div class="muted">No hay doctores</div>'; return; }
+  doctors.forEach(d=>{
+    const div = document.createElement('div'); div.style.padding='8px'; div.style.borderBottom='1px solid #f0f6ff';
+    div.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
+      <div><strong>${d.name}</strong><div class="muted" style="font-size:13px">${d.esp} • ${d.hours.join(', ')}</div></div>
+      <div style="display:flex;gap:6px">
+        <button class="btn-secondary" onclick='openDoctorEditor("${d.id}")'>Editar</button>
+        <button class="btn-secondary" onclick='deleteDoctor("${d.id}")' style="background:transparent;border:1px solid #ffe6e9;color:var(--danger)">Eliminar</button>
+      </div>
+    </div>`;
+    container.appendChild(div);
+  });
+}
+
+function saveDoctor(){
+  const name = document.getElementById('doctorName').value.trim();
+  const esp = document.getElementById('doctorEsp').value.trim();
+  const hours = document.getElementById('doctorHours').value.split(',').map(s=>s.trim()).filter(Boolean);
+  if(!name || !esp){ alert('Complete nombre y especialidad'); return; }
+  if(editingDoctorId){
+    const d = doctors.find(x=>x.id===editingDoctorId);
+    d.name = name; d.esp = esp; d.hours = hours;
+    editingDoctorId = null;
+  } else {
+    doctors.push({ id: 'd'+Date.now(), name, esp, hours });
+  }
+  saveDoctors();
+  closeModal('modalDoctor');
+  renderDoctors(); renderDoctorsSelect(); renderStats();
+}
+
+function deleteDoctor(id){
+  if(!confirm('Eliminar doctor?')) return;
+  doctors = doctors.filter(d=>d.id!==id);
+  saveDoctors();
+  renderDoctors(); renderDoctorsSelect(); renderStats();
+}
+
+/* render doctors select for appointment */
+function renderDoctorsSelect(filterEsp){
+  const sel = document.getElementById('fieldDoc'); 
+  if(!sel) return;
+  sel.innerHTML = '<option value="">-- Doctor --</option>';
+  (doctors.filter(d => !filterEsp || d.esp === filterEsp)).forEach(d=>{ const opt = document.createElement('option'); opt.value = d.id; opt.text = `${d.name} — ${d.esp}`; sel.appendChild(opt); });
+}
+
+/* utility: available hours for doctor on date */
+function getAvailableHoursForDoctorOnDate(doctorId, date){
+  const doc = doctors.find(d=>d.id === doctorId);
+  if(!doc) return [];
+  const booked = appointments.filter(a => a.docId === doctorId && a.fec === date).map(a => a.hor);
+  return doc.hours.filter(h => !booked.includes(h));
+}
+
+/* specialty chosen -> filter doctors */
+document.getElementById('fieldEsp').addEventListener('change', ()=>{
+  const esp = document.getElementById('fieldEsp').value;
+  renderDoctorsSelect(esp);
+  document.getElementById('fieldDoc').value = '';
+  populateHours([]);
+});
+
+/* doctor chosen -> populate hours for selected date (or full hours) */
+document.getElementById('fieldDoc').addEventListener('change', ()=>{
+  const docId = document.getElementById('fieldDoc').value;
+  const date = document.getElementById('fieldFecha').value;
+  if(!docId){ populateHours([]); return; }
+  const available = date ? getAvailableHoursForDoctorOnDate(docId, date) : (doctors.find(d=>d.id===docId)?.hours || []);
+  populateHours(available);
+});
+
+/* date chosen -> auto select first available hour or choose doctor automatically */
+document.getElementById('fieldFecha').addEventListener('change', ()=>{
+  const date = document.getElementById('fieldFecha').value;
+  const docId = document.getElementById('fieldDoc').value;
+  if(!date) return;
+  if(docId){
+    const available = getAvailableHoursForDoctorOnDate(docId, date);
+    populateHours(available);
+    if(available.length>0){ document.getElementById('fieldHora').value = available[0]; }
+    else { alert('No hay horas disponibles para ese doctor en la fecha seleccionada'); }
+  } else {
+    const esp = document.getElementById('fieldEsp').value;
+    if(esp){
+      const docsInEsp = doctors.filter(d=>d.esp === esp);
+      for(const d of docsInEsp){
+        const avail = getAvailableHoursForDoctorOnDate(d.id, date);
+        if(avail.length>0){
+          document.getElementById('fieldDoc').value = d.id;
+          populateHours(avail);
+          document.getElementById('fieldHora').value = avail[0];
+          return;
         }
+      }
+      alert('No hay horas disponibles en esta fecha para la especialidad seleccionada');
+    }
+  }
+});
 
-        // Asignación automática de doctor y emergencia
-        const especialidad = document.getElementById("especialidad");
-        const doctor = document.getElementById("doctorAsignado");
-        const medicos = {
-            "Medicina General": {
-                "nombre": "Dr. José Alvarado",
-                "horario": ["08:00", "09:00", "10:00"]
-            },
-            "Pediatría": {
-                "nombre": "Dra. María Huamán",
-                "horario": ["11:00", "12:00", "13:00"]
-            },
-            "Cardiología": {
-                "nombre": "Dr. Carlos Quispe",
-                "horario": ["14:00", "15:00", "16:00"]
-            }
-        };
+/* populate hours */
+function populateHours(hours){
+  const sel = document.getElementById('fieldHora'); sel.innerHTML = '<option value="">-- Hora --</option>';
+  hours.forEach(h=>{ const opt = document.createElement('option'); opt.value = h; opt.text = h; sel.appendChild(opt); });
+}
 
-        especialidad.addEventListener("change", () => {
-            const especialidadSeleccionada = especialidad.value;
-            if (medicos[especialidadSeleccionada]) {
-                doctor.value = medicos[especialidadSeleccionada].nombre;
-            } else {
-                doctor.value = "";
-            }
-        });
+/* submit appointment */
+document.getElementById('proForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const name = document.getElementById('fieldName').value.trim();
+  const dni = document.getElementById('fieldDni').value.trim();
+  const esp = document.getElementById('fieldEsp').value;
+  const docId = document.getElementById('fieldDoc').value;
+  const fecha = document.getElementById('fieldFecha').value;
+  const hora = document.getElementById('fieldHora').value;
+  if(!name || !dni || !esp || !docId || !fecha || !hora){ alert('Complete todos los campos'); return; }
+  const doc = doctors.find(d=>d.id===docId);
+  const available = getAvailableHoursForDoctorOnDate(docId, fecha);
+  if(!available.includes(hora)){ alert('La hora seleccionada ya no está disponible. Elige otra.'); populateHours(available); return; }
+  const appt = { id:'a'+Date.now(), nombre:name, dni:dni, esp, docId, docName:doc.name, fec:fecha, hor:hora, createdAt: (new Date()).toISOString() };
+  appointments.push(appt);
+  saveAppointments();
+  document.getElementById('confirmBody').innerHTML = `<strong>${name}</strong><br>${esp} — ${doc.name}<br>${fecha} • ${hora}`;
+  showModal('modalConfirm');
+  renderMyAppointments(); renderAllAppointmentsTable(); renderStats();
+});
 
-        // Función para solicitar emergencia
-        function solicitarEmergencia() {
-            const especialidadSeleccionada = especialidad.value;
-            const horaSeleccionada = document.getElementById("hora").value;
-            const modalEmergencia = document.getElementById("modalEmergencia");
-            const emergenciaEsp = document.getElementById("emergenciaEsp");
-            const emergenciaDoc = document.getElementById("emergenciaDoc");
+/* emergency */
+function requestEmergency(){
+  const name = document.getElementById('fieldName').value.trim();
+  const dni = document.getElementById('fieldDni').value.trim();
+  const esp = document.getElementById('fieldEsp').value;
+  if(!name || !dni || !esp){ alert('Complete nombre, DNI y especialidad para emergencia'); return; }
+  const doc = doctors.find(d=>d.esp === esp) || { name: 'Dr. Emergencia', id:'em', hours:[] };
+  const now = new Date();
+  const fecha = now.toISOString().split('T')[0];
+  const hora = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  const appt = { id:'a'+Date.now(), nombre:name, dni, esp, docId:doc.id||'em', docName:doc.name, fec:fecha, hor:hora, emergencia:true, createdAt: new Date().toISOString() };
+  appointments.push(appt); saveAppointments();
+  document.getElementById('confirmBody').innerHTML = `<strong>Emergencia</strong><br>${esp} — ${doc.name}<br>${fecha} • ${hora}`;
+  showModal('modalConfirm');
+  renderMyAppointments(); renderAllAppointmentsTable(); renderStats();
+}
 
-            if (medicos[especialidadSeleccionada]) {
-                emergenciaEsp.textContent = especialidadSeleccionada;
-                emergenciaDoc.textContent = "Dr. Emergencia " + especialidadSeleccionada; // Simulación de médico de emergencia
-                modalEmergencia.style.display = "flex";
-            } else {
-                alert("Seleccione una especialidad para solicitar emergencia.");
-            }
-        }
+/* render patient appointments */
+function renderMyAppointments(){
+  if(!currentPatient) return;
+  const tbody = document.querySelector('#tableMyAppts tbody'); tbody.innerHTML='';
+  const list = appointments.filter(a=>a.dni === currentPatient.dni);
+  if(list.length===0){ tbody.innerHTML = '<tr><td colspan="5" class="muted">No tienes citas</td></tr>'; return; }
+  list.forEach(a=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${a.fec}</td><td>${a.hor}</td><td>${a.esp}</td><td>${a.docName||''}</td>
+      <td class="float-right">
+        <button class="btn-secondary" onclick='editAppointment("${a.id}")'>Editar</button>
+        <button class="btn-secondary" onclick='deleteAppointment("${a.id}")' style="background:transparent;border:1px solid #ffe6e9;color:var(--danger)">Eliminar</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
 
-        function cerrarEmergencia() {
-            const modalEmergencia = document.getElementById("modalEmergencia");
-            modalEmergencia.style.display = "none";
-        }
+/* edit/delete appointment */
+function editAppointment(id){
+  const a = appointments.find(x=>x.id===id);
+  if(!a) return;
+  document.getElementById('fieldName').value = a.nombre;
+  document.getElementById('fieldDni').value = a.dni;
+  document.getElementById('fieldEsp').value = a.esp;
+  renderDoctorsSelect(a.esp);
+  setTimeout(()=>{
+    const docObj = doctors.find(d=>d.name === a.docName || d.id===a.docId);
+    if(docObj) document.getElementById('fieldDoc').value = docObj.id;
+    document.getElementById('fieldFecha').value = a.fec;
+    const available = getAvailableHoursForDoctorOnDate(docObj ? docObj.id : '', a.fec);
+    if(!available.includes(a.hor)) available.unshift(a.hor);
+    populateHours(available);
+    document.getElementById('fieldHora').value = a.hor;
+  }, 50);
+  appointments = appointments.filter(x=>x.id!==id); saveAppointments(); renderMyAppointments(); renderAllAppointmentsTable(); renderStats();
+}
 
-        // Registro de citas
-        const formCita = document.getElementById("formCita");
-        const tablaCitas = document.getElementById("tablaCitas").querySelector("tbody");
+function deleteAppointment(id){ if(!confirm('Eliminar cita?')) return; appointments = appointments.filter(x=>x.id!==id); saveAppointments(); renderMyAppointments(); renderAllAppointmentsTable(); renderStats(); }
 
-        formCita.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const nombre = document.getElementById("nombre").value;
-            const dni = document.getElementById("dni2").value;
-            const esp = especialidad.value;
-            const doc = doctor.value;
-            const fecha = document.getElementById("fecha").value;
-            const hora = document.getElementById("hora").value;
+/* show/hide views */
+function showCitaForm(prefill=false){ document.getElementById('citaFormCard').style.display='block'; document.getElementById('myAppointmentsCard').style.display='none'; window.scrollTo({top:document.getElementById('citaFormCard').offsetTop-80, behavior:'smooth'}); if(prefill && users.length>0){ const p = users.find(u=>u.role==='paciente'); if(p){ document.getElementById('fieldName').value=p.nombre; document.getElementById('fieldDni').value=p.dni; } } }
+function showMyAppointments(){ if(!currentPatient){ alert('Inicia sesión'); return; } document.getElementById('citaFormCard').style.display='none'; document.getElementById('myAppointmentsCard').style.display='block'; renderMyAppointments(); }
 
-            const fila = document.createElement("tr");
-            fila.classList.add("fila-cita");
-            fila.innerHTML = `
-                <td>${nombre}</td>
-                <td>${dni}</td>
-                <td>${esp}</td>
-                <td>${doc}</td>
-                <td>${fecha}</td>
-                <td>${hora}</td>
-            `;
-            fila.addEventListener("click", () => mostrarDetalle(nombre, dni, esp, doc, fecha, hora));
+/* stats */
+function renderStats(){ document.getElementById('statUsers').innerText = users.filter(u=>u.role==='paciente').length; document.getElementById('statDoctors').innerText = doctors.length; document.getElementById('statAppointments').innerText = appointments.length; }
 
-            if (tablaCitas.innerHTML.includes("Aún no hay citas")) tablaCitas.innerHTML = "";
-            tablaCitas.appendChild(fila);
+/* admin: render all appointments table */
+function renderAllAppointmentsTable(){ if(!currentAdmin) return; document.getElementById('adminAppointmentsCard').style.display='block'; const tbody = document.querySelector('#tableAllAppts tbody'); tbody.innerHTML=''; if(appointments.length===0){ tbody.innerHTML='<tr><td colspan="7" class="muted">Sin citas</td></tr>'; return; } appointments.forEach(a=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${a.nombre}</td><td>${a.dni}</td><td>${a.esp}</td><td>${a.docName||''}</td><td>${a.fec}</td><td>${a.hor}</td><td>${a.emergencia? 'Sí': 'No'}</td>`; tbody.appendChild(tr); }); }
 
-            formCita.reset();
-            doctor.value = "";
-        });
+/* export csv */
+function exportAllCSV(){ if(appointments.length===0){ alert('No hay citas'); return; } const rows = [['Nombre','DNI','Especialidad','Doctor','Fecha','Hora','Emergencia']]; appointments.forEach(a=> rows.push([a.nombre,a.dni,a.esp,a.docName,a.fec,a.hor,a.emergencia? 'Sí':'No'])); const csv = rows.map(r => r.map(cell => `"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\n'); const blob = new Blob([csv], {type:'text/csv'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'citas_es_salud.csv'; a.click(); URL.revokeObjectURL(url); }
 
-        // Modal de detalle de cita
-        const modalCita = document.getElementById("modalCita");
+/* actions table search */
+document.getElementById("searchActions").addEventListener("keyup", function() {
+  let filter = this.value.toLowerCase();
+  let rows = document.querySelectorAll("#actionsTable tbody tr");
+  rows.forEach(row => {
+    let texto = row.innerText.toLowerCase();
+    row.style.display = texto.includes(filter) ? "" : "none";
+  });
+});
 
-        function mostrarDetalle(nombre, dni, esp, doc, fecha, hora) {
-            document.getElementById("detNombre").textContent = nombre;
-            document.getElementById("detDNI").textContent = dni;
-            document.getElementById("detEsp").textContent = esp;
-            document.getElementById("detDoc").textContent = doc;
-            document.getElementById("detFecha").textContent = fecha;
-            document.getElementById("detHora").textContent = hora;
-            modalCita.style.display = "flex";
-        }
+/* init */
+(function init(){ saveUsers(); saveDoctors(); saveAppointments(); renderUsers(); renderDoctors(); renderDoctorsSelect(); renderStats(); setTimeout(()=>{ abrirLoginModal(); }, 250); })();
 
-        function cerrarDetalle() {
-            modalCita.style.display = "none";
-        }
-    </script>
+</script>
 </body>
-
 </html>
